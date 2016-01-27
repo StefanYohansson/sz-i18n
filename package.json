@@ -4,7 +4,7 @@
   "description": " Internationalisation library for JS projects",
   "main": "index",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run build && coffee tests/test.coffee",
     "build": "coffee --compile --output src/i18n.coffee dist/"
   },
   "repository": {
