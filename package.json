@@ -2,7 +2,7 @@
   "name": "sz-i18n",
   "version": "1.0.0",
   "description": " Internationalisation library for JS projects",
-  "main": "i18n.js",
+  "main": "dist/i18n.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/StefanYohansson/i18njs/issues"
   },
-  "homepage": "https://github.com/StefanYohansson/i18njs#readme"
+  "homepage": "https://github.com/StefanYohansson/i18njs#readme",
+  "dependencies": {
+    "coffee-script": "^1.10.0"
+  }
 }
