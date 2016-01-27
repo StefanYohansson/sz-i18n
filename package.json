@@ -1,0 +1,23 @@
+{
+  "name": "sz-i18n",
+  "version": "1.0.0",
+  "description": " Internationalisation library for JS projects",
+  "main": "i18n.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StefanYohansson/i18njs.git"
+  },
+  "keywords": [
+    "Internationalisation",
+    "i18n"
+  ],
+  "author": "Roddeh",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/StefanYohansson/i18njs/issues"
+  },
+  "homepage": "https://github.com/StefanYohansson/i18njs#readme"
+}
