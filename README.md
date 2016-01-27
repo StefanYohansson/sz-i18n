@@ -1,8 +1,6 @@
-i18njs
+sz-i18n
 ======
 
-Internationalisation library for JS projects
+[![Build Status](https://travis-ci.org/StefanYohansson/sz-i18n.svg?branch=master)](https://travis-ci.org/StefanYohansson/sz-i18n)
 
-For more information checkout
-
-[http://i18njs.com](http://i18njs.com)
+Internationalization library. ️ Easy and Fast. ⚡️
