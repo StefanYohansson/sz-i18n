@@ -2,7 +2,7 @@
   "name": "sz-i18n",
   "version": "1.0.0",
   "description": " Internationalisation library for JS projects",
-  "main": "dist/i18n.js",
+  "main": "index",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "coffee --compile --output src/i18n.coffee dist/"
