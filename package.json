@@ -1,7 +1,7 @@
 {
   "name": "sz-i18n",
-  "version": "1.0.0",
-  "description": " Internationalisation library for JS projects",
+  "version": "1.0.1",
+  "description": "Internationalization library. Easy and Fast.",
   "main": "index",
   "scripts": {
     "test": "npm run build && make test", 
