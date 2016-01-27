@@ -4,7 +4,7 @@
   "description": " Internationalisation library for JS projects",
   "main": "index",
   "scripts": {
-    "test": "npm run build && coffee tests/test.coffee",
+    "test": "npm run build && make test", 
     "build": "coffee --compile --output src/i18n.coffee dist/"
   },
   "repository": {
@@ -23,5 +23,9 @@
   "homepage": "https://github.com/StefanYohansson/i18njs#readme",
   "dependencies": {
     "coffee-script": "^1.10.0"
+  },
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "mocha": "^2.4.3"
   }
 }
