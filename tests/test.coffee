@@ -1,6 +1,6 @@
 con = console
 
-i18n = require("./i18n")
+i18n = require("../dist/i18n")
 
 assert = (val, expected) ->
   if val is expected
