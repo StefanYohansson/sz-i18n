@@ -5,7 +5,7 @@
   "main": "index",
   "scripts": {
     "test": "npm run build && make test",
-    "build": "coffee --compile --output src/i18n.coffee dist/"
+    "build": "babel src/i18n.js -o dist/i18n.js"
   },
   "repository": {
     "type": "git",
