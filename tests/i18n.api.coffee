@@ -2,7 +2,7 @@ con = console
 
 chai = require("chai")
 i18n = require("../dist/i18n")
-
+console.log(i18n)
 assert = chai.assert.equal
 
 describe "API", ->

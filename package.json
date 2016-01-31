@@ -5,7 +5,7 @@
   "main": "index",
   "scripts": {
     "test": "npm run build && make test",
-    "build": "babel src/i18n.js -o dist/i18n.js"
+    "build": "babel src -d dist"
   },
   "repository": {
     "type": "git",
