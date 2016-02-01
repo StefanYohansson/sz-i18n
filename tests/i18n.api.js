@@ -31,4 +31,13 @@ describe("API", () => {
   it('should have two instances in pool', () => {
     assert(Object.keys(_i.getAvailableDictionaries()).length == 2, true)
   })
+
+  it('should set japanese as default dictionary', () => {
+    _i.useDictionary('ja', false);
+    assert(_i.activeDictionary, 'ja')
+  })
+
+  it('should translate using default dictionary', () => {
+    assert(_i.translate('Cancel'), "キャンセル")
+  })
 })
