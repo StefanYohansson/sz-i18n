@@ -3,11 +3,13 @@ import Translator from './translator'
 export default class i18n {
   constructor() {
     this.dictionaries = {}
+    this.onceOldDict = null
     this.activeDictionary = null
     this.once = null
   }
 
   using(dictionary, once = true) {
+    this.onceOldDict = this.activeDictionary
     this.activeDictionary = dictionary
     this.once = once
     return this
@@ -21,7 +23,7 @@ export default class i18n {
     if(this.activeDictionary) {
       const result = this.dictionaries[this.activeDictionary].translate(text, defaultReplacers, optionalReplacers, formattingOrContext, context)
       if(this.once) {
-        this.activeDictionary = null
+        this.activeDictionary = this.onceOldDict
         this.once = null
       }
       return result
