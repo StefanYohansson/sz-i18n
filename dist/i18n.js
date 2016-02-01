@@ -20,12 +20,17 @@ var i18n = function () {
 
     this.dictionaries = {};
     this.activeDictionary = null;
+    this.once = null;
   }
 
   _createClass(i18n, [{
     key: 'useDictionary',
     value: function useDictionary(dictionary) {
+      var once = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
       this.activeDictionary = dictionary;
+      this.once = once;
+      return this;
     }
   }, {
     key: 'translator',
@@ -35,16 +40,37 @@ var i18n = function () {
       return this.dictionaries[dictionary || this.activeDictionary];
     }
   }, {
-    key: 'getAvailableDictionary',
-    value: function getAvailableDictionary() {
+    key: 'translate',
+    value: function translate(text, defaultReplacers, optionalReplacers, formattingOrContext, context) {
+      if (this.activeDictionary) {
+        var result = this.dictionaries[this.activeDictionary].translate(text, defaultReplacers, optionalReplacers, formattingOrContext, context);
+        if (this.once) {
+          this.activeDictionary = null;
+          this.once = null;
+        }
+        return result;
+      }
+      if (Object.keys(this.dictionaries).length == 1) return this.dictionaries[Object.keys(this.dictionaries)[0]].translate(text, defaultReplacers, optionalReplacers, formattingOrContext, context);
+    }
+  }, {
+    key: 'getAvailableDictionaries',
+    value: function getAvailableDictionaries() {
       return this.dictionaries;
     }
   }, {
+    key: 'getDictionary',
+    value: function getDictionary(lang) {
+      return this.dictionaries[lang];
+    }
+  }, {
     key: 'create',
-    value: function create(data) {
-      trans = new _translator2.default();
+    value: function create(lang, data) {
+      var trans = new _translator2.default();
       if (data) {
         trans.add(data);
+      }
+      if (!this.dictionaries[lang]) {
+        this.dictionaries[lang] = trans;
       }
       return trans;
     }
@@ -52,7 +78,5 @@ var i18n = function () {
 
   return i18n;
 }();
-
-i18n.translate = _translator2.default.translate;
 
 exports.default = i18n;
