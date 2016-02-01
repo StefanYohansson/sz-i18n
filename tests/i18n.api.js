@@ -150,4 +150,40 @@ describe("API", () => {
   it('should interpolate', () => {
     assert(_i.translate("Welcome %{name}", { name:"John" }), "Welcome John")
   })
+
+  it('should interpolate, pluralize and contextualize english', () => {
+    assert(
+      _i.using('en').translate("%{name} uploaded %n photos to their %{album} album", 1,
+        { name:"John", album:"Buck's Night" },
+        { gender:"male" }
+      ),
+      "John uploaded 1 photo to his Buck's Night album"
+    )
+
+    assert(
+      _i.using('en').translate("%{name} uploaded %n photos to their %{album} album", 4,
+        { name:"Jane", album:"Hen's Night" },
+        { gender:"female" }
+      ),
+      "Jane uploaded 4 photos to her Hen's Night album"
+    ) 
+  })
+
+  it('should interpolate, pluralize and contextualize japanese', () => {
+    assert(
+      _i.translate("%{name} uploaded %n photos to their %{album} album", 1,
+        { name:"John", album:"Buck's Night" },
+        { gender:"male" }
+      ),
+      "Johnは彼のBuck's Nightアルバムに写真1枚をアップロードしました"
+    )
+
+    assert(
+      _i.translate("%{name} uploaded %n photos to their %{album} album", 4,
+        { name:"Jane", album:"Hen's Night" },
+        { gender:"female" }
+      ),
+      "Janeは彼女のHen's Nightアルバムに写真4枚をアップロードしました"
+    ) 
+  })
 })
