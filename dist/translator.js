@@ -210,14 +210,24 @@ var Translator = function () {
         return data.contexts;
       }
 
-      data.contexts.map(function (context) {
-        var equal = true;
-        Object.keys(context.matches).map(function (index) {
-          var value = context.matches[index];
-          equal = equal && value == context[index];
-        });
-        if (equal) return context;
-      });
+      var equal = true;
+      var i = null;
+      var len = null;
+      var key = null;
+
+      for (i = 0, len = data.contexts.length; i < len; i++) {
+        var c = data.contexts[i];
+        var _equal = true;
+        var matches = c.matches;
+        for (key in matches) {
+          var value = matches[key];
+          _equal = _equal && value === context[key];
+        }
+        if (_equal) {
+          return c;
+        }
+      }
+
       return null;
     }
   }, {

@@ -17,7 +17,7 @@ export default class Translator {
     let num = null
     let formatting = null
     let context = null
-
+    
     if (typeof defaultReplacers == "number") {
       num = defaultReplacers
       formatting = optionalReplacers
@@ -46,7 +46,7 @@ export default class Translator {
     } else {
       [defaultText, num, formatting, context] = this.getNumberOrContextFormat(defaultReplacers, optionalReplacers, formattingOrContext);
     }
-
+    
     return [defaultText, num, formatting, context]; 
   }
 
@@ -151,15 +151,24 @@ export default class Translator {
       return data.contexts;
     }
 
-    data.contexts.map((context) => {
+    let equal = true
+    let i = null
+    let len = null
+    let key = null
+
+    for(i = 0, len = data.contexts.length; i < len; i++) {
+      const c = data.contexts[i]
       let equal = true
-      Object.keys(context.matches).map(function(index) {
-        let value = context.matches[index]
-        equal = equal && value == context[index]
-      });
-      if(equal)
-        return context 
-    })
+      const matches = c.matches
+      for (key in matches) {
+        let value = matches[key]
+        equal = equal && value === context[key]
+      }
+      if(equal) {
+        return c;
+      }
+    }
+    
     return null
   }
 
