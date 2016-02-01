@@ -243,7 +243,6 @@ var Translator = function () {
       if (!formatting) {
         return text;
       }
-
       Object.keys(formatting).map(function (ind) {
         var regex = new RegExp("%{" + ind + "}", "g");
         text = text.replace(regex, formatting[ind]);
