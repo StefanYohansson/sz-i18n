@@ -24,8 +24,8 @@ var i18n = function () {
   }
 
   _createClass(i18n, [{
-    key: 'useDictionary',
-    value: function useDictionary(dictionary) {
+    key: 'using',
+    value: function using(dictionary) {
       var once = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
 
       this.activeDictionary = dictionary;

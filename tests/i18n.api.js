@@ -15,7 +15,7 @@ describe("API", () => {
 
   it('should translate from japanese', () => {
     assert(ja.translate('Cancel'), "キャンセル")
-    assert(_i.useDictionary('ja').translate('Cancel'), "キャンセル")
+    assert(_i.using('ja').translate('Cancel'), "キャンセル")
   })
 
   it('should create a portuguese instance', () => {
@@ -25,7 +25,7 @@ describe("API", () => {
 
   it('should translate from portuguese', () => {
     assert(pt.translate('Cancel'), "Cancelar")
-    assert(_i.useDictionary('pt').translate('Cancel'), "Cancelar")
+    assert(_i.using('pt').translate('Cancel'), "Cancelar")
   })
 
   it('should have two instances in pool', () => {
@@ -33,7 +33,7 @@ describe("API", () => {
   })
 
   it('should set japanese as default dictionary', () => {
-    _i.useDictionary('ja', false);
+    _i.using('ja', false);
     assert(_i.activeDictionary, 'ja')
   })
 

@@ -7,7 +7,7 @@ export default class i18n {
     this.once = null
   }
 
-  useDictionary(dictionary, once = true) {
+  using(dictionary, once = true) {
     this.activeDictionary = dictionary
     this.once = once
     return this
