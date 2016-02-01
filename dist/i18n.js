@@ -19,6 +19,7 @@ var i18n = function () {
     _classCallCheck(this, i18n);
 
     this.dictionaries = {};
+    this.onceOldDict = null;
     this.activeDictionary = null;
     this.once = null;
   }
@@ -28,6 +29,7 @@ var i18n = function () {
     value: function using(dictionary) {
       var once = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
 
+      this.onceOldDict = this.activeDictionary;
       this.activeDictionary = dictionary;
       this.once = once;
       return this;
@@ -45,7 +47,7 @@ var i18n = function () {
       if (this.activeDictionary) {
         var result = this.dictionaries[this.activeDictionary].translate(text, defaultReplacers, optionalReplacers, formattingOrContext, context);
         if (this.once) {
-          this.activeDictionary = null;
+          this.activeDictionary = this.onceOldDict;
           this.once = null;
         }
         return result;

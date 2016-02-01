@@ -49,9 +49,8 @@ var Translator = function () {
           formatting = optionalReplacers;
           context = formattingOrContext || this.globalContext;
         }
-
-        return [defaultText, num, formatting, context];
       }
+      return [defaultText, num, formatting, context];
     }
   }, {
     key: "formatParams",
@@ -62,7 +61,7 @@ var Translator = function () {
 
       if (isObject(defaultReplacers)) {
         formatting = defaultReplacers;
-        context = numOrFormattingOrContext || this.globalContext;
+        context = optionalReplacers || this.globalContext;
       } else {
         var _getNumberOrContextFo = this.getNumberOrContextFormat(defaultReplacers, optionalReplacers, formattingOrContext);
 
@@ -176,6 +175,7 @@ var Translator = function () {
       var _this2 = this;
 
       var value = data[text];
+
       if (value == null) {
         return value;
       }
@@ -185,12 +185,20 @@ var Translator = function () {
         }
       } else {
         if (value instanceof Array || value.length) {
-          value.map(function (tripe) {
-            if ((num >= triple[0] || triple[0] == null) && (num <= triple[1] || triple[1] == null)) {
-              result = _this2.applyFormatting(triple[2].replace("-%n", String(-num)), num, formatting);
-              return _this2.applyFormatting(result.replace("%n", String(num)), num, formatting);
-            }
-          });
+          var _ret2 = function () {
+            var result = null;
+            value.map(function (triple) {
+              if ((num >= triple[0] || triple[0] == null) && (num <= triple[1] || triple[1] == null)) {
+                result = _this2.applyFormatting(triple[2].replace("-%n", String(-num)), num, formatting);
+                result = _this2.applyFormatting(result.replace("%n", String(num)), num, formatting);
+              }
+            });
+            return {
+              v: result
+            };
+          }();
+
+          if ((typeof _ret2 === "undefined" ? "undefined" : _typeof(_ret2)) === "object") return _ret2.v;
         }
       }
       return null;
@@ -204,9 +212,9 @@ var Translator = function () {
 
       data.contexts.map(function (context) {
         var equal = true;
-        context.matches.keys(context.matches).map(function (index) {
+        Object.keys(context.matches).map(function (index) {
           var value = context.matches[index];
-          equal = equal && value == context[key];
+          equal = equal && value == context[index];
         });
         if (equal) return context;
       });
@@ -222,12 +230,14 @@ var Translator = function () {
   }, {
     key: "applyFormatting",
     value: function applyFormatting(text, num, formatting) {
-      if (formatting instanceof Array && formatting.length > 0) {
-        formatting.map(function (ind) {
-          regex = new RegExp("%{#{ ind }}", "g");
-          text = text.replace(regex, formatting[ind]);
-        });
+      if (!formatting) {
+        return text;
       }
+
+      Object.keys(formatting).map(function (ind) {
+        var regex = new RegExp("%{" + ind + "}", "g");
+        text = text.replace(regex, formatting[ind]);
+      });
       return text;
     }
   }]);

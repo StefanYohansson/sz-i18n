@@ -1,5 +1,5 @@
 function isObject(obj) {
-  let type = typeof obj
+  const type = typeof obj
   return type == "function" || type == "object" && !!obj
 }
 
@@ -31,19 +31,18 @@ export default class Translator {
         formatting = optionalReplacers
         context = formattingOrContext || this.globalContext
       }
-
-      return [defaultText, num, formatting, context]
     }
+    return [defaultText, num, formatting, context]
   }
 
   formatParams(text, defaultReplacers, optionalReplacers, formattingOrContext, context) {
     let defaultText = null
     let num = null
     let formatting = null
-
+    
     if (isObject(defaultReplacers)) {
       formatting = defaultReplacers
-      context = numOrFormattingOrContext || this.globalContext
+      context = optionalReplacers || this.globalContext
     } else {
       [defaultText, num, formatting, context] = this.getNumberOrContextFormat(defaultReplacers, optionalReplacers, formattingOrContext);
     }
@@ -58,7 +57,7 @@ export default class Translator {
     let formatting = null;
 
     [defaultText, num, formatting, context] = this.formatParams(text, defaultReplacers, optionalReplacers, formattingOrContext, context)
-    
+
     return this.translateText(text, num, formatting, context, defaultText)
   }
 
@@ -114,7 +113,7 @@ export default class Translator {
     if(!result) {
       result = this.findTranslation(text, num, formatting, this.data.values, defaultText)
     }
-
+   
     if(!result) {
       return this.useOriginalText(defaultText || text, num, formatting)
     }
@@ -124,6 +123,7 @@ export default class Translator {
 
   findTranslation(text, num, formatting, data) {
     let value = data[text]
+    
     if(value == null) {
       return value;
     }
@@ -133,12 +133,14 @@ export default class Translator {
       }
     } else {
       if(value instanceof Array || value.length) {
-        value.map((tripe) => {
+        let result = null
+        value.map((triple) => {
             if((num >= triple[0] || triple[0] == null) && (num <= triple[1] || triple[1] == null)) {
             result = this.applyFormatting(triple[2].replace("-%n", String(-num)), num, formatting)
-            return this.applyFormatting(result.replace("%n", String(num)), num, formatting)
+            result = this.applyFormatting(result.replace("%n", String(num)), num, formatting)
           }
         })
+        return result
       }
     }
     return null
@@ -151,12 +153,12 @@ export default class Translator {
 
     data.contexts.map((context) => {
       let equal = true
-      context.matches.keys(context.matches).map(function(index) {
+      Object.keys(context.matches).map(function(index) {
         let value = context.matches[index]
-        equal = equal && value == context[key]
+        equal = equal && value == context[index]
       });
       if(equal)
-        return context  
+        return context 
     })
     return null
   }
@@ -169,12 +171,14 @@ export default class Translator {
   }
 
   applyFormatting(text, num, formatting) {
-    if(formatting instanceof Array && formatting.length > 0) {
-      formatting.map((ind) => {
-        regex = new RegExp("%{#{ ind }}", "g")
-        text = text.replace(regex, formatting[ind])
-      })
+    if(!formatting) {
+      return text
     }
+
+    Object.keys(formatting).map((ind) => {
+      const regex = new RegExp("%{" + ind + "}", "g")
+      text = text.replace(regex, formatting[ind])
+    })
     return text
   }
 }
