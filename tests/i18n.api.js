@@ -19,7 +19,7 @@ describe("API", () => {
   })
 
   it('should create a portuguese instance', () => {
-    pt = _i.create('pt', {values: {"Cancel": "Cancelar"}})
+    pt = _i.create('pt', {values: {"Cancel": "Cancelar", "Welcome %{name}": "Bem Vindo %{name}"}})
     assert(typeof _i.getDictionary('pt'), "object")
   })
 
@@ -79,7 +79,7 @@ describe("API", () => {
     assert(_i.translate('Cancel'), "キャンセル")
   })
 
-  it('should pluralizate japanese', () => {
+  it('should pluralize japanese', () => {
     assert(_i.translate("%n comments", 0), "0 コメント")
     assert(_i.translate("%n comments", 1), "1 コメント")
     assert(_i.translate("%n comments", 2), "2 コメント")
@@ -133,13 +133,13 @@ describe("API", () => {
     assert(_i.getDictionary('en').data.values['Cancel'], 'Cancel')
   })
 
-  it('should pluralizate english', () => {
+  it('should pluralize english', () => {
     assert(_i.using('en').translate("%n comments", 0), "0 comments")
     assert(_i.using('en').translate("%n comments", 1), "1 comment")
     assert(_i.using('en').translate("%n comments", 2), "2 comments")
   })
 
-  it('should complex pluralizate english', () => {
+  it('should complex pluralize english', () => {
     assert(_i.using('en').translate("Due in %n days", -2), "Due 2 days ago")
     assert(_i.using('en').translate("Due in %n days", -1), "Due Yesterday")
     assert(_i.using('en').translate("Due in %n days", 0), "Due Today")
@@ -148,7 +148,7 @@ describe("API", () => {
   })
 
   it('should interpolate', () => {
-    assert(_i.translate("Welcome %{name}", { name:"John" }), "Welcome John")
+    assert(_i.using('pt').translate("Welcome %{name}", { name:"John" }), "Bem Vindo John")
   })
 
   it('should interpolate, pluralize and contextualize english', () => {

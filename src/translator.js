@@ -183,7 +183,6 @@ export default class Translator {
     if(!formatting) {
       return text
     }
-
     Object.keys(formatting).map((ind) => {
       const regex = new RegExp("%{" + ind + "}", "g")
       text = text.replace(regex, formatting[ind])
