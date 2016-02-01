@@ -1,5 +1,5 @@
 function isObject(obj) {
-  type = typeof obj
+  let type = typeof obj
   return type == "function" || type == "object" && !!obj
 }
 
@@ -13,8 +13,11 @@ export default class Translator {
   }
 
   getNumberOrContextFormat(defaultReplacers, optionalReplacers, formattingOrContext) {
-    defaultText = null
-    num = null
+    let defaultText = null
+    let num = null
+    let formatting = null
+    let context = null
+
     if (typeof defaultReplacers == "number") {
       num = defaultReplacers
       formatting = optionalReplacers
@@ -34,14 +37,15 @@ export default class Translator {
   }
 
   formatParams(text, defaultReplacers, optionalReplacers, formattingOrContext, context) {
-    defaultText = null
-    num = null
+    let defaultText = null
+    let num = null
+    let formatting = null
 
-    if (isObject(replacers)) {
-      formatting = replacers
+    if (isObject(defaultReplacers)) {
+      formatting = defaultReplacers
       context = numOrFormattingOrContext || this.globalContext
     } else {
-      [defaultText, num, formatting, context] = getNumberOrContextFormat(replacers, optionalReplacers, formattingOrContext);
+      [defaultText, num, formatting, context] = this.getNumberOrContextFormat(defaultReplacers, optionalReplacers, formattingOrContext);
     }
 
     return [defaultText, num, formatting, context]; 
@@ -49,16 +53,21 @@ export default class Translator {
 
 
   translate(text, defaultReplacers, optionalReplacers, formattingOrContext, context = this.globalContext) {
+    let defaultText = null
+    let num = null
+    let formatting = null;
+
     [defaultText, num, formatting, context] = this.formatParams(text, defaultReplacers, optionalReplacers, formattingOrContext, context)
     
-    this.translateText(text, num, formatting, context, defaultText)
+    return this.translateText(text, num, formatting, context, defaultText)
   }
 
   add(data) {
     if(data.values) {
+      let that = this
       Object.keys(data.values).forEach(function (key) {
         let value = data.values[key]
-        this.data.values[key] = value
+        that.data.values[key] = value
       });
     }
     
@@ -95,7 +104,9 @@ export default class Translator {
       return this.useOriginalText(defaultText || text, num, formatting)
     }
 
-    contextData = this.getContextData(this.data, context)
+    let contextData = this.getContextData(this.data, context)
+    let result = null
+    
     if(contextData) {
       result = this.findTranslation(text, num, formatting, contextData.values, defaultText)
     }
@@ -112,7 +123,7 @@ export default class Translator {
   }
 
   findTranslation(text, num, formatting, data) {
-    value = data[text]
+    let value = data[text]
     if(value == null) {
       return value;
     }
@@ -158,10 +169,12 @@ export default class Translator {
   }
 
   applyFormatting(text, num, formatting) {
-    formatting.map((ind) => {
-      regex = new RegExp("%{#{ ind }}", "g")
-      text = text.replace(regex, formatting[ind])
-    })
+    if(formatting instanceof Array && formatting.length > 0) {
+      formatting.map((ind) => {
+        regex = new RegExp("%{#{ ind }}", "g")
+        text = text.replace(regex, formatting[ind])
+      })
+    }
     return text
   }
 }

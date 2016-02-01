@@ -22,7 +22,6 @@
   },
   "homepage": "https://github.com/StefanYohansson/i18njs#readme",
   "dependencies": {
-    "coffee-script": "^1.10.0"
   },
   "devDependencies": {
     "babel-core": "^6.4.5",

@@ -13,7 +13,7 @@ Object.defineProperty(exports, "__esModule", {
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function isObject(obj) {
-  type = typeof obj === "undefined" ? "undefined" : _typeof(obj);
+  var type = typeof obj === "undefined" ? "undefined" : _typeof(obj);
   return type == "function" || type == "object" && !!obj;
 }
 
@@ -31,8 +31,11 @@ var Translator = function () {
   _createClass(Translator, [{
     key: "getNumberOrContextFormat",
     value: function getNumberOrContextFormat(defaultReplacers, optionalReplacers, formattingOrContext) {
-      defaultText = null;
-      num = null;
+      var defaultText = null;
+      var num = null;
+      var formatting = null;
+      var context = null;
+
       if (typeof defaultReplacers == "number") {
         num = defaultReplacers;
         formatting = optionalReplacers;
@@ -53,14 +56,15 @@ var Translator = function () {
   }, {
     key: "formatParams",
     value: function formatParams(text, defaultReplacers, optionalReplacers, formattingOrContext, context) {
-      defaultText = null;
-      num = null;
+      var defaultText = null;
+      var num = null;
+      var formatting = null;
 
-      if (isObject(replacers)) {
-        formatting = replacers;
+      if (isObject(defaultReplacers)) {
+        formatting = defaultReplacers;
         context = numOrFormattingOrContext || this.globalContext;
       } else {
-        var _getNumberOrContextFo = getNumberOrContextFormat(replacers, optionalReplacers, formattingOrContext);
+        var _getNumberOrContextFo = this.getNumberOrContextFormat(defaultReplacers, optionalReplacers, formattingOrContext);
 
         var _getNumberOrContextFo2 = _slicedToArray(_getNumberOrContextFo, 4);
 
@@ -77,6 +81,10 @@ var Translator = function () {
     value: function translate(text, defaultReplacers, optionalReplacers, formattingOrContext) {
       var context = arguments.length <= 4 || arguments[4] === undefined ? this.globalContext : arguments[4];
 
+      var defaultText = null;
+      var num = null;
+      var formatting = null;
+
       var _formatParams = this.formatParams(text, defaultReplacers, optionalReplacers, formattingOrContext, context);
 
       var _formatParams2 = _slicedToArray(_formatParams, 4);
@@ -86,7 +94,7 @@ var Translator = function () {
       formatting = _formatParams2[2];
       context = _formatParams2[3];
 
-      this.translateText(text, num, formatting, context, defaultText);
+      return this.translateText(text, num, formatting, context, defaultText);
     }
   }, {
     key: "add",
@@ -94,10 +102,13 @@ var Translator = function () {
       var _this = this;
 
       if (data.values) {
-        Object.keys(data.values).forEach(function (key) {
-          var value = data.values[key];
-          this.data.values[key] = value;
-        });
+        (function () {
+          var that = _this;
+          Object.keys(data.values).forEach(function (key) {
+            var value = data.values[key];
+            that.data.values[key] = value;
+          });
+        })();
       }
 
       if (data.contexts) {
@@ -142,7 +153,9 @@ var Translator = function () {
         return this.useOriginalText(defaultText || text, num, formatting);
       }
 
-      contextData = this.getContextData(this.data, context);
+      var contextData = this.getContextData(this.data, context);
+      var result = null;
+
       if (contextData) {
         result = this.findTranslation(text, num, formatting, contextData.values, defaultText);
       }
@@ -162,7 +175,7 @@ var Translator = function () {
     value: function findTranslation(text, num, formatting, data) {
       var _this2 = this;
 
-      value = data[text];
+      var value = data[text];
       if (value == null) {
         return value;
       }
@@ -209,10 +222,12 @@ var Translator = function () {
   }, {
     key: "applyFormatting",
     value: function applyFormatting(text, num, formatting) {
-      formatting.map(function (ind) {
-        regex = new RegExp("%{#{ ind }}", "g");
-        text = text.replace(regex, formatting[ind]);
-      });
+      if (formatting instanceof Array && formatting.length > 0) {
+        formatting.map(function (ind) {
+          regex = new RegExp("%{#{ ind }}", "g");
+          text = text.replace(regex, formatting[ind]);
+        });
+      }
       return text;
     }
   }]);
