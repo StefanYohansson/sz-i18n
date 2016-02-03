@@ -70,15 +70,17 @@ npm test
 ```javascript
   var i = new i18n
   var ja = i.create('ja', {
-            "Hello": "こんにちは",
-            "Yes": "はい",
-            "No": "いいえ",
-            "Ok": "Ok",
-            "Cancel": "キャンセル",
-            "%n comments":[
-            [0, null, "%n コメント"]
-            ],
-            "_monkeys":"猿も木から落ちる"
+            values: {
+              "Hello": "こんにちは",
+              "Yes": "はい",
+              "No": "いいえ",
+              "Ok": "Ok",
+              "Cancel": "キャンセル",
+              "%n comments":[
+              [0, null, "%n コメント"]
+              ],
+              "_monkeys":"猿も木から落ちる"
+            }
           })
 
  i.translate("%n comments", 0)
