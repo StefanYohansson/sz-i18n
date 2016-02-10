@@ -3,11 +3,12 @@
 var docopt = require('docopt')
 var fs = require('fs')
 szExporter = require('./sz-exporter')
+szImporter = require('./sz-importer')
 
 doc = `
 Usage:
     sz-i18n export <source> -o <dest> -t <langs>
-    sz-i18n import [-f | -d] <source> <dest> 
+    sz-i18n import <source> -b <base> -o <dest> [-t <langs>]
     sz-i18n -h | --help | --version
 `
 
@@ -29,8 +30,8 @@ fs.readFile(__dirname + '/../package.json', (err, data) => {
 function main() {
   if (opts.export) {
     ex = new szExporter({
-      directory: opts['-d'],
-      file: opts['-f'],
+      output: opts['-o'],
+      target: opts['-t'],
       source: opts['<source>'],
       dest: opts['<dest>'],
       langs: opts['<langs>']
@@ -39,7 +40,16 @@ function main() {
   }
 
   if (opts.import) {
-
+    im = new szImporter({
+      output: opts['-o'],
+      target: opts['-t'],
+      base: opts['-b'],
+      base_dest: opts['<base>'],
+      source: opts['<source>'],
+      dest: opts['<dest>'],
+      langs: opts['<langs>']
+    })
+    return im.import()
   }
 
   return 0
