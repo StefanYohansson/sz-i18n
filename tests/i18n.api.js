@@ -12,6 +12,15 @@ describe("API", () => {
     ja = _i.create('ja', {values: {"Cancel": "キャンセル"}})
     assert(typeof _i.getDictionary('ja'), "object")
   })
+  
+  it('should delete and create again a japanese instance', () => {
+    ja = _i.create('ja', {values: {"Cancel": "キャンセル"}})
+    _i.remove('ja')
+    assert(typeof _i.getDictionary('ja'), "undefined")
+    
+    ja = _i.create('ja', {values: {"Cancel": "キャンセル"}})
+    assert(typeof _i.getDictionary('ja'), "object")
+  })
 
   it('should translate from japanese', () => {
     assert(ja.translate('Cancel'), "キャンセル")
