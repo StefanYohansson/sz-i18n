@@ -17,7 +17,7 @@ var opts = null
 
 fs.readFile(__dirname + '/../package.json', (err, data) => {
   if(err) {
-    return console.log(err)
+    throw(err)
   }
 
   packageConfig = JSON.parse(data)
