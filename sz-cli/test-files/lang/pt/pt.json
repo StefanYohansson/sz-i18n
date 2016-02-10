@@ -1,0 +1,15 @@
+{
+  "%n comment": "%n comentário",
+  "%n comments": "",
+  "%{name} uploaded %n photo to her %{album} album": "",
+  "%{name} uploaded %n photo to his %{album} album": "",
+  "%{name} uploaded %n photos to her %{album} album": "",
+  "%{name} uploaded %n photos to his %{album} album": "",
+  "%{name} uploaded %n photos to their %{album} album": "",
+  "Cancel": "",
+  "Due -%n days ago": "",
+  "Due Today": "",
+  "Due Tomorrow": "",
+  "Due Yesterday": "",
+  "Due in %n days": ""
+}

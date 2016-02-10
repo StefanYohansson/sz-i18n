@@ -24,7 +24,10 @@
     "url": "https://github.com/StefanYohansson/sz-i18n/issues"
   },
   "homepage": "https://github.com/StefanYohansson/sz-i18n#readme",
-  "dependencies": {},
+  "dependencies": {
+    "docopt": "^0.6.2",
+    "lodash": "^4.2.1"
+  },
   "devDependencies": {
     "babel-cli": "^6.4.5",
     "babel-core": "^6.4.5",
