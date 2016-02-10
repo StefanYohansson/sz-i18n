@@ -50,4 +50,8 @@ export default class i18n {
     }
     return trans
   }
+
+  remove(lang) {
+    delete this.dictionaries[lang]
+  }
 }

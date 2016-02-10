@@ -76,6 +76,11 @@ var i18n = function () {
       }
       return trans;
     }
+  }, {
+    key: 'remove',
+    value: function remove(lang) {
+      delete this.dictionaries[lang];
+    }
   }]);
 
   return i18n;
