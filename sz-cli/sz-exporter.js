@@ -23,10 +23,6 @@ class Exporter {
   }
 
   extractSrc(callback) {
-    if(this.directory) {
-
-    }
-
     this.getFileData(this.source, false, callback)
   }
 

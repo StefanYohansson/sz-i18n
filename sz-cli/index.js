@@ -6,7 +6,7 @@ szExporter = require('./sz-exporter')
 
 doc = `
 Usage:
-    sz-i18n export [-f | -d] <source> <dest> -t <langs>
+    sz-i18n export <source> -o <dest> -t <langs>
     sz-i18n import [-f | -d] <source> <dest> 
     sz-i18n -h | --help | --version
 `
