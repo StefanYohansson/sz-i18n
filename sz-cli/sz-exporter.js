@@ -160,7 +160,7 @@ class Exporter {
         }
       }
       langs.map((lang) => {
-        let lang_folder = dest_folder + lang
+        let lang_folder = dest_folder + path.sep + lang
         fs.stat(lang_folder, (e, st) => {
           if(e) {
             if(e.code == 'ENOENT') {
