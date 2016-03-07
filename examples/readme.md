@@ -1,4 +1,4 @@
-# Run Examples
+# Running examples
 
 Just run any built-in http server in sz-i18n root folder.
 
