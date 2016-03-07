@@ -23,7 +23,11 @@ npm test
 ## Base json
 
 You need to write a json (base source) with values and contexts, this structure is wrote in your default system language.
-
+You can generate this file by running:
+```shell
+sz-i18n generate
+```
+this command will output something like: (so you can save anywhere in your project)
 ```json
 // src-lang/en.json
   {
