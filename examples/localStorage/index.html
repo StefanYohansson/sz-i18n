@@ -1,0 +1,91 @@
+ <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>sz-i18n localStorage example</title>
+    <meta name="author" content="Stefan Yohansson">
+    <meta name="description" content="only a translation project example">
+    <meta name="keywords" content="i18n,translation,javascript">
+
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,700,900' rel='stylesheet' type='text/css'>
+    <style>
+      body {
+        font-family: 'Roboto', 'Open Sans';
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <div id="lang-switch">
+      <a class="langs" href="javascript:void(0)" data-lang="en-US">English</a>
+      <a class="langs" href="javascript:void(0)" data-lang="pt-BR">Portuguese</a>
+    </div>
+    <script type="text/html" id="hello-robot">
+      <h1><%= i18n.translate("Hello Robot") %></h1>
+      <p><%= i18n.translate("%{name}, wait %n minutes please.", 1, { name: "Robot" }) %></p>
+      <p><%= i18n.translate('Thank you very much.') %></p>
+    </script>
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.6.1/lodash.min.js"></script>
+    <script src="/dist/i18n.js"></script>
+    <script type="text/javascript">
+      function loadDictionaries(i) {
+        i.create('en-US', {
+          'values': {
+	    'Hello Robot': 'Hello Robot',
+	    'Thank you very much.': 'Thank you very much.',
+	    '%{name}, wait %n minutes please.': [
+	      [0, 0, '%{name}, wait %n minutes please.'],
+	      [1, 1, '%{name}, wait %n minute please.'],
+	      [2, null, '%{name}, wait %n minutes please.']
+	    ]
+	  }
+	});
+
+	i.create('pt-BR', {
+          'values': {
+	    'Hello Robot': 'Olá Robô',
+	    'Thank you very much.': 'Muito Obrigado.',
+	    '%{name}, wait %n minutes please.': [
+	      [0, 0, '%{name}, espere %n minutos por favor.'],
+	      [1, 1, '%{name}, espere %n minuto por favor.'],
+	      [2, null, '%{name}, espere %n minutos por favor.']
+	    ]
+	  }
+	});
+      }
+
+      function setDefaultDict(i, lang) {
+        if (!localStorage.lang) {
+          localStorage.lang = navigator.language;
+	}
+
+	if(lang) {
+	  localStorage.lang = lang;
+	}
+	
+	i.using(localStorage.lang, false);
+      }
+
+      $(document).ready(function() {
+      	var i = new i18n.default;
+	loadDictionaries(i);
+	setDefaultDict(i);
+	
+	var compiled = _.template($('#hello-robot').html());
+	$('#app').html(compiled({ 'i18n': i }));
+
+	$('.langs').on('click', function(e) {
+	  e.preventDefault();
+	  var self = $(this);
+	  var lang = self.data('lang');
+	  setDefaultDict(i, lang);
+	  location.reload();
+	});
+      });
+    </script>
+  </body>
+</html>
+
