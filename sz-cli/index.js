@@ -4,11 +4,13 @@ var docopt = require('docopt')
 var fs = require('fs')
 szExporter = require('./sz-exporter')
 szImporter = require('./sz-importer')
+szGenerator = require('./sz-generator')
 
 doc = `
 Usage:
     sz-i18n export <source> -o <dest> -t <langs>
     sz-i18n import <source> -b <base> -o <dest> [-t <langs>]
+    sz-i18n generate
     sz-i18n -h | --help | --version
 `
 
@@ -50,6 +52,12 @@ function main() {
       langs: opts['<langs>']
     })
     return im.import()
+  }
+
+  if (opts.generate) {
+    g = new szGenerator({})
+
+    return g.generate()
   }
 
   return 0
