@@ -1,6 +1,6 @@
 {
   "name": "sz-i18n",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Internationalization library. Easy and Fast.",
   "main": "index",
   "bin": {
@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "npm run build && make test",
-    "build": "babel src -d dist"
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
