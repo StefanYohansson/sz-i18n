@@ -2,9 +2,10 @@ module.exports = {
     entry: "./src/i18n",
     output: {
         path: `${__dirname}/dist`,
-        libraryTarget: "var",
+        libraryTarget: "umd",
         library: "i18n",
-        filename: "i18n.js"
+        filename: "i18n.js",
+        umdNamedDefine: true
     },
     module: {
       loaders: [
