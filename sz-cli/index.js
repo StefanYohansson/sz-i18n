@@ -2,14 +2,17 @@
 
 var docopt = require('docopt')
 var fs = require('fs')
+var _ = require('lodash')
+szInit = require('./sz-init')
 szExporter = require('./sz-exporter')
 szImporter = require('./sz-importer')
 szGenerator = require('./sz-generator')
 
 doc = `
 Usage:
-    sz-i18n export <source> -o <dest> -t <langs>
-    sz-i18n import <source> -b <base> -o <dest> [-t <langs>]
+    sz-i18n init
+    sz-i18n export [<base>] [-o <dest>] [-t <langs>]
+    sz-i18n import [<source>] [-b <base>] [-o <dest>] [-t <langs>]
     sz-i18n generate
     sz-i18n -h | --help | --version
 `
@@ -17,26 +20,53 @@ Usage:
 var userArgs = process.argv.slice(2)
 var packageConfig = {}
 var opts = null
+var config = {}
 
 fs.readFile(__dirname + '/../package.json', (err, data) => {
-  if(err) {
+  if (err) {
     throw(err)
   }
 
   packageConfig = JSON.parse(data)
   opts = docopt.docopt(doc, {argv: userArgs, version: packageConfig['version']})
   
-  main()
+  try {
+    config = JSON.parse(fs.readFileSync('i18n.json', 'utf8'))
+  } catch(e) {
+    if (!opts.init) {
+      console.log(e.message)
+      console.log('Please make sure you have any i18n.json in current folder or provide arguments.')
+      process.exit(0)
+    }
+  }
+  
+  main(config)
 })
 
-function main() {
+function validateConfig(config) {
+  _.map(config, (value, key) => {
+    if (!value) {
+      console.log(`Please provide ${key} and make sure isn't empty in i18n.json.`);
+      process.exit(0)
+    }
+  })
+}
+
+function main(config) {
+  validateConfig(config)
+  
+  if (opts.init) {
+    i = new szInit({})
+    return i.init()
+  }
+
   if (opts.export) {
     ex = new szExporter({
       output: opts['-o'],
       target: opts['-t'],
-      source: opts['<source>'],
-      dest: opts['<dest>'],
-      langs: opts['<langs>']
+      source: opts['<base>'] || config['base'],
+      dest: opts['<dest>'] || config['dest'],
+      langs: opts['<langs>'] || config['langs'].join(',')
     })
     return ex.export()
   }
@@ -46,10 +76,10 @@ function main() {
       output: opts['-o'],
       target: opts['-t'],
       base: opts['-b'],
-      base_dest: opts['<base>'],
-      source: opts['<source>'],
-      dest: opts['<dest>'],
-      langs: opts['<langs>']
+      base_dest: opts['<base>'] || config['base'],
+      source: opts['<source>'] || config['dest'],
+      dest: opts['<dest>'] || config['source'],
+      langs: opts['<langs>'] || config['langs'].join(',')
     })
     return im.import()
   }
