@@ -32,7 +32,7 @@ class Importer {
         throw(err)
 
       langs.map((lang) => {
-        let lang_folder = this.source + lang
+        let lang_folder = this.source + path.sep + lang
         fs.stat(lang_folder, (e, st) => {
           if(e)
             throw(e)

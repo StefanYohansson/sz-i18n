@@ -1,0 +1,9 @@
+{
+  "base": "./sz-cli/test-files/src-lang/en.json",
+  "source": "./sz-cli/test-files/src-lang",
+  "dest": "./sz-cli/test-files/lang",
+  "langs": [
+    "ja",
+    "pt"
+  ]
+}
