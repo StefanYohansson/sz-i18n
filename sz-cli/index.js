@@ -46,7 +46,7 @@ fs.readFile(__dirname + '/../package.json', (err, data) => {
 function validateConfig(config) {
   _.map(config, (value, key) => {
     if (!value) {
-      console.log(`Please provide ${key} and make sure isn't empty in i18n.json.`);
+      console.log(`Please provide ${key} and make sure it isn't empty in i18n.json.`);
       process.exit(0)
     }
   })
