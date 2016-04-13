@@ -28,6 +28,7 @@ i.e: ./my/base/file.json
       source: ask.string('Enter your source (base files) folder'),
       dest: ask.string('Enter your destination (translation files) folder'),
       langs: ask.string('Enter your available languages (comma separated)'),
+      source_code: ask.string('Enter your source code (src) folder'),
     })
     
     config.langs = config.langs.split(',')

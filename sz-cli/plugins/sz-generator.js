@@ -4,7 +4,7 @@ var fs = require('fs')
 var path = require('path')
 var _ = require('lodash')
 
-var sample = require('./sample.json')
+var sample = require('../sample.json')
 
 class Generator {
   constructor(opts) {
