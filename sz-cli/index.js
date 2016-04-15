@@ -3,14 +3,12 @@
 var docopt = require('docopt')
 var fs = require('fs')
 var _ = require('lodash')
-szInit = require('./sz-init')
-szExporter = require('./sz-exporter')
-szImporter = require('./sz-importer')
-szGenerator = require('./sz-generator')
+var plugins = require('./plugins')
 
 doc = `
 Usage:
     sz-i18n init
+    sz-i18n extract [<source_code>] [<base>] [-t <langs>]
     sz-i18n export [<base>] [-o <dest>] [-t <langs>]
     sz-i18n import [<source>] [-b <base>] [-o <dest>] [-t <langs>]
     sz-i18n generate
@@ -22,27 +20,24 @@ var packageConfig = {}
 var opts = null
 var config = {}
 
-fs.readFile(__dirname + '/../package.json', (err, data) => {
-  if (err) {
-    throw(err)
-  }
-
-  packageConfig = JSON.parse(data)
-  opts = docopt.docopt(doc, {argv: userArgs, version: packageConfig['version']})
+var packageConfig = fs.readFileSync(__dirname + '/../package.json', 'utf8')
+packageConfig = JSON.parse(packageConfig)
+opts = docopt.docopt(doc, {argv: userArgs, version: packageConfig['version']})
   
-  try {
-    config = JSON.parse(fs.readFileSync('i18n.json', 'utf8'))
-  } catch(e) {
-    if (!opts.init) {
-      console.log(e.message)
-      console.log('Please make sure you have any i18n.json in current folder or provide arguments.')
-      process.exit(0)
-    }
+try {
+  config = JSON.parse(fs.readFileSync('i18n.json', 'utf8'))
+} catch(e) {
+  if (!opts.init) {
+    console.log(e.message)
+    console.log('Please make sure you have any i18n.json in current folder or provide arguments.')
+    process.exit(0)
   }
-  
-  main(config)
-})
+}
 
+// entrypoint
+main(config)
+
+    
 function validateConfig(config) {
   _.map(config, (value, key) => {
     if (!value) {
@@ -56,12 +51,21 @@ function main(config) {
   validateConfig(config)
   
   if (opts.init) {
-    i = new szInit({})
+    i = new plugins.szInit({})
     return i.init()
   }
 
+  if (opts.extract) {
+    et = new plugins.szExtractor({
+      source_code: opts['<source_code>'] || config['source_code'],
+      base: opts['base'] || config['base'],
+      langs: opts['langs'] || config['langs'].join(',')
+    })
+    return et.extract()
+  }
+
   if (opts.export) {
-    ex = new szExporter({
+    ex = new plugins.szExporter({
       output: opts['-o'],
       target: opts['-t'],
       source: opts['<base>'] || config['base'],
@@ -72,7 +76,7 @@ function main(config) {
   }
 
   if (opts.import) {
-    im = new szImporter({
+    im = new plugins.szImporter({
       output: opts['-o'],
       target: opts['-t'],
       base: opts['-b'],
@@ -85,7 +89,7 @@ function main(config) {
   }
 
   if (opts.generate) {
-    g = new szGenerator({})
+    g = new plugins.szGenerator({})
 
     return g.generate()
   }
