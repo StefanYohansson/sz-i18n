@@ -1,7 +1,7 @@
 'use strict';
 
-var ask = require('ask-sync');
-var fs = require('fs');
+var readline = require('readline-sync')
+var fs = require('fs')
 
 class Init {
   constructor(opts) {
@@ -22,17 +22,37 @@ base, source and destination must be the path relative to this folder.
 i.e: ./my/base/file.json
 
 `)
-
-    var config = ask({
-      base: ask.string('Enter your base language file'),
-      source: ask.string('Enter your source (base files) folder'),
-      dest: ask.string('Enter your destination (translation files) folder'),
-      langs: ask.string('Enter your available languages (comma separated)'),
-      source_code: ask.string('Enter your source code (src) folder'),
-    })
     
-    config.langs = config.langs.split(',')
-    fs.writeFileSync('i18n.json', JSON.stringify(config, null, 2), 'utf8')
+    var config = {
+      base: { message: 'Enter your base language file', required: true },
+      source: { message: 'Enter your source (base files) folder', required: true },
+      dest: { message: 'Enter your destination (translation files) folder', required: true },
+      langs: { message: 'Enter your available languages (comma separated)', required: true },
+      source_code: { message: 'Enter your source code (src) folder', required: true },
+    }
+    
+    var result = {}
+    var properties = Object.keys(config)
+    var index = 0
+    while (index < properties.length) {
+      var key = properties[index]
+      var rules = config[key]
+
+      var message = rules.message || ''
+      var required = rules.required || null
+
+      var answer = readline.question(`${message}: `)
+
+      if (required && !answer) {
+        console.log('Please provide correct information. This atrribute is required.') 
+      } else {
+        result[key] = answer
+        index++
+      }
+    }
+    
+    result.langs = result.langs.split(',')
+    fs.writeFileSync('i18n.json', JSON.stringify(result, null, 2), 'utf8')
 
     console.log('Generated i18n.json config.')
   }

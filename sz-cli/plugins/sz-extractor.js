@@ -3,7 +3,8 @@
 var fs = require('fs')
 var _ = require('lodash')
 var recursive = require('recursive-readdir')
-var ask = require('ask-sync');
+var readline = require('readline-sync')
+var colors = require('colors/safe');
 
 function unique(list) {
   var result = [];
@@ -23,7 +24,7 @@ class Extractor {
   extractFromFile(file) {
     var content = fs.readFileSync(file, 'utf8')
     // @TODO: this rule should comes from config file 
-    var reg = new RegExp("i18n\\.t\\(['\"`](.*?)['\"`]\\)", 'g')
+    var reg = /i18n\.t\(['"`](.*?)['"`].*?\)/g
     var matches = [];
     var match;
     while (match !== null) {
@@ -35,25 +36,45 @@ class Extractor {
   }
   
   promptCommands(messages) {
-    messages.map(promptString);
-    
-    function promptString(message) {
-      /*
-      var reg = new RegExp("%[snfd]", 'g')
+    var result = { values: {} };
+    _.each(messages, (message) => {
+      console.log(colors.yellow('Processing: '))
+      console.log(message)
+      
+      result['values'][message] = message;
+      
+      var reg = new RegExp("(.*?%[snfd].*?)")
       var match = message.match(reg)
+      if(match) {
+        var has_plural = readline.keyInYNStrict('We detected your string has replaceable values. Do you want to add plural?')
+        if (has_plural) {
+          var pluralization = [];
+          var new_plural = true
+          while (new_plural) {
+            var range = readline.question('Enter plural range: ')
+            var plural_message = readline.question('Enter message for this range: ')
+            range = range.split('-')
+            var range1 = range[1]
+            if (range1 == 'null') {
+              range1 = null
+            } else {
+              range1 = Number(range1)
+            }
+            
+            pluralization.push([Number(range[0]), range1, plural_message]);
+            
+            console.log('message created.')
 
-      console.log('message:', match);
-      
-      
-      var options = ask({
-        'has_context': ask.string('The string has context?', {
-          values: ['y', 'n']
-        })
-      })
+            new_plural = !readline.keyInYNStrict(colors.red(`finish ${message} pluralization?`))
+          }
 
-      console.log(options)
-      */
-    }
+          result['values'][message] = pluralization;
+        }
+      }
+      console.log(colors.green('Processing next.\n'))
+    })
+
+    return result;
   }
 
   extract() {
@@ -69,11 +90,26 @@ class Extractor {
       // get collected messages
       var base_file = fs.readFileSync(this.base, 'utf8')
       if(!base_file)
-        console.log("You need to generate a base file and reference in config or provide by argument. Please read the docs.");
+        console.log(colors.red("You need to generate a base file and reference in config or provide by argument. Please read the docs."));
       // filter existing messages
       messages = _.filter(all_messages, (f) => { return base_file.indexOf(f) == -1 })
       // ask what user want to do
-      this.promptCommands(messages)
+      var user_happy = false
+      while (!user_happy) {
+        var generated_messages = this.promptCommands(messages)
+        console.log(colors.yellow('We\'ll generate this strings: '))
+        console.log(colors.green(JSON.stringify(generated_messages, null, 2)))
+        var is_happy = readline.question(colors.red(`are you happy? [y/n/q] `))
+        if (is_happy == 'q') {
+          process.exit(0)
+        }
+
+        user_happy = is_happy == 'y'
+      }
+      base_file = JSON.parse(base_file || '{}')
+      all_messages = Object.assign(base_file, generated_messages)
+      all_messages = JSON.stringify(all_messages, null, 2)
+      fs.writeFileSync(this.base, all_messages, 'utf8')
     })
   }
 }
