@@ -132,7 +132,7 @@ export default class Translator {
         return this.applyFormatting(value, num, formatting)
       }
     } else {
-      if(value instanceof Array || value.length) {
+      if(value instanceof Array && value.length) {
         let result = null
         value.map((triple) => {
             if((num >= triple[0] || triple[0] == null) && (num <= triple[1] || triple[1] == null)) {
@@ -141,7 +141,7 @@ export default class Translator {
           }
         })
         return result
-      }
+      } 
     }
     return null
   }

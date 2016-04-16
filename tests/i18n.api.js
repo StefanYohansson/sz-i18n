@@ -98,6 +98,7 @@ describe("API", () => {
     _i.create('en', {
       values: {
         "Cancel": "Cancel",
+        "%n selected": "%n selected",
         "%n comments":[
           [0, 0, "%n comments"],
           [1, 1, "%n comment"],
@@ -146,6 +147,8 @@ describe("API", () => {
     assert(_i.using('en').translate("%n comments", 0), "0 comments")
     assert(_i.using('en').translate("%n comments", 1), "1 comment")
     assert(_i.using('en').translate("%n comments", 2), "2 comments")
+    
+    assert(_i.using('en').translate("%n selected", 3), "3 selected")
   })
 
   it('should complex pluralize english', () => {
