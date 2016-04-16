@@ -54,8 +54,7 @@ class Importer {
     messages.map((message) => {
       const value = data[message]
       if(value != '') {
-        content = content.replace(new RegExp("(.*[:] )?\""+message+"\"([,\\]])","gi"), "$1\"" + value + "\"$2") 
-        content = content.replace(new RegExp("(.*[:] )?\""+message+"\"","gi"), "$1\"" + value + "\"") 
+        content = content.replace(new RegExp("(.*[:] )?\""+message+"\"([,\\]])?","gi"), "$1\"" + value + "\"$2") 
       }
     })
     this.saveDest(lang, content)
