@@ -336,7 +336,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return this.applyFormatting(value, num, formatting);
 	        }
 	      } else {
-	        if (value instanceof Array || value.length) {
+	        if (value instanceof Array && value.length) {
 	          var _ret2 = function () {
 	            var result = null;
 	            value.map(function (triple) {
