@@ -138,7 +138,7 @@ class Exporter {
       let result = _.xor(messages, keys_translated_messages)
       
       result.map((value, key) => {
-        translated_messages[value] = ''
+        translated_messages[value] = value
       })
       
       fs.writeFile(file, JSON.stringify(translated_messages, null, '  '), 'utf8', (err) => {
