@@ -184,7 +184,31 @@ this command will output something like: (so you can save anywhere in your proje
   }
 ```
 
+### init
+
+This command will prompt some information about sz-i18n configuration and write a file in your current path.
+
+### extract
+
+This command will extract i18n strings from your source code folder.
+
+```shell
+sz-i18n extract
+```
+
+if you don't configure i18n.json file (use `init` command), you can use like this:
+
+```shell
+sz-i18n extract [<source_code>] [<base>] [-t <langs>]
+```
+
 ### export
+
+```shell
+sz-i18n export
+```
+
+if you don't configure i18n.json file (use `init` command), you can use like this:
 
 ```shell
 sz-i18n export sz-cli/test-files/src-lang/en.json -o sz-cli/test-files/lang/ -t pt,ja
