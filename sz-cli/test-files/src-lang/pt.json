@@ -1,7 +1,7 @@
 {      
     "values": {
-        "Cancelar": "Cancelar",
-        "%n comentários":[
+        "Cancel": "Cancelar",
+        "%n comments":[
             [0, 0, "%n comentários"],
             [1, 1, "%n comentário"],
             [2, null, "%n comentários"]
