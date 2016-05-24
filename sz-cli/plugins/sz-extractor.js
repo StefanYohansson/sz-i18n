@@ -58,7 +58,7 @@ class Extractor {
 
     this.source_map.map((source) => {
       content = `${content}
-      ${source.file}+${source.line}:${source.match}`
+${source.file}+${source.line}:${source.match}`
     })
 
     return content
