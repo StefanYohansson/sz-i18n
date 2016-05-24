@@ -38,7 +38,7 @@ class Extractor {
     var line_c = 1
     strip.map((line) => {
       // @TODO: this rule should comes from config file 
-      var reg = /i18n\.t\(['"`](.*?)['"`].*?\)/g
+      var reg = /i18n\.t.+\(['"`](.*?)['"`].*?\)/g
       var matches = [];
       var match;
       while (match !== null) {
@@ -57,8 +57,8 @@ class Extractor {
     var content = ''
     
     this.source_map.map((source) => {
-      content = `${content}\n
-      ${source.file}+${source.line}:${match}\n`
+      content = `${content}
+      ${source.file}+${source.line}:${source.match}`
     })
     
     return content

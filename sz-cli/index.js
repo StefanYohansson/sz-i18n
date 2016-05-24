@@ -8,7 +8,7 @@ var plugins = require('./plugins')
 doc = `
 Usage:
     sz-i18n init
-    sz-i18n extract [<source_code>] [<base>] [-t <langs>]
+    sz-i18n extract [<source_code>] [<base>] [-t <langs>] [<extract_rules>] [<extract_pattern>]
     sz-i18n export [<base>] [-o <dest>] [-t <langs>]
     sz-i18n import [<source>] [-b <base>] [-o <dest>] [-t <langs>]
     sz-i18n generate
@@ -58,6 +58,8 @@ function main(config) {
   if (opts.extract) {
     et = new plugins.szExtractor({
       source_code: opts['<source_code>'] || config['source_code'],
+      extract_rules: opts['<extract_rules>'] || config['extract_rules'],
+      extract_pattern: opts['<extract_pattern>'] || config['extract_pattern'],
       base: opts['base'] || config['base'],
       langs: opts['langs'] || config['langs'].join(',')
     })

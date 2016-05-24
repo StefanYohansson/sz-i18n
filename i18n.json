@@ -2,6 +2,8 @@
   "base": "./sz-cli/test-files/src-lang/en.json",
   "source": "./sz-cli/test-files/src-lang",
   "dest": "./sz-cli/test-files/lang",
+  "source_code": "./examples/localStorage",
+  "extract_rules": ["!*.html"],
   "langs": [
     "ja",
     "pt"
