@@ -16,7 +16,7 @@ class Exporter {
       const messages = this.extract(srcData)
       this.createDst(messages)
     }
-    
+
     this.extractSrc(callback)
 
     return 0
@@ -28,23 +28,23 @@ class Exporter {
 
   getFileData(file, empty, callback) {
     var that = this
-    
+
     fs.open(file, 'a', (err, fd) => {
       if(err)
         throw(err)
       fs.readFile(file, 'utf8', (err, data) => {
-        if(err) 
+        if(err)
           throw('No Access to file: ' + file)
         if(!data && !empty)
-          throw('File empty: ' + file) 
-        
+          throw('File empty: ' + file)
+
         if(data) {
           data = JSON.parse(data)
           callback(data)
         } else {
           callback({})
         }
-      }) 
+      })
       fs.close(fd)
     })
   }
@@ -53,12 +53,12 @@ class Exporter {
     if(!data) {
       return data
     }
-    
+
     let messages = []
     if(data.values) {
       messages = this.extractValues(data.values)
     }
-    
+
     if(data.contexts) {
       messages = messages.concat(this.extractContexts(data.contexts))
     }
@@ -79,11 +79,11 @@ class Exporter {
       }
       return key
     })
-   
+
     let result = nested_messages.map((value, key) => {
       return this.extractNested(value)
     })
-    
+
     let result_nested_messages = []
     for(var i=0;i<result.length;i++) {
       const value = result[i]
@@ -91,9 +91,9 @@ class Exporter {
         result_nested_messages.push(value[j])
       }
     }
-    
+
     messages = messages.concat(result_nested_messages)
-    
+
     return messages
   }
 
@@ -104,7 +104,7 @@ class Exporter {
 
       if(typeof last_value === 'string')
         return last_value
-      
+
       if(typeof value == 'object')
         return this.extractNested(nested)
     })
@@ -113,13 +113,13 @@ class Exporter {
 
   extractContexts(contexts) {
     let messages = []
-    
+
     messages = Object.keys(contexts).map((key) => {
       const value = contexts[key]
 
       return this.extractValues(value.values)
     })
-    
+
     let result_nested_messages = []
     for(var i=0;i<messages.length;i++) {
       const value = messages[i]
@@ -131,24 +131,24 @@ class Exporter {
 
     return messages
   }
-  
+
   createDst(messages) {
     const callback = (file, translated_messages) => {
       let keys_translated_messages = Object.keys(translated_messages)
       let result = _.xor(messages, keys_translated_messages)
-      
+
       result.map((value, key) => {
         translated_messages[value] = value
       })
-      
+
       fs.writeFile(file, JSON.stringify(translated_messages, null, '  '), 'utf8', (err) => {
         if(err) throw err
-        
+
         console.log('File Saved: ', file)
       });
     }
 
-    this.getFileDataDest(this.dest, true, callback)    
+    this.getFileDataDest(this.dest, true, callback)
   }
 
   getFileDataDest(dest_folder, empty, callback) {
@@ -169,12 +169,12 @@ class Exporter {
           }
         })
 
-        let createFile = (file) => { 
+        let createFile = (file) => {
           fs.readFile(file, 'utf8', (err, data) => {
-            if(err) 
+            if(err)
               throw('No Access to file: ' + file)
             if(!data && !empty)
-              throw('File empty: ' + file) 
+              throw('File empty: ' + file)
             if(data) {
               data = JSON.parse(data)
               callback(file, data)

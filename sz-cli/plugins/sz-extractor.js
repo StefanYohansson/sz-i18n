@@ -37,7 +37,7 @@ class Extractor {
     const strip = content.split(`\n`)
     var line_c = 1
     strip.map((line) => {
-      // @TODO: this rule should comes from config file 
+      // @TODO: this rule should comes from config file
       var reg = /i18n\.t.+\(['"`](.*?)['"`].*?\)/g
       var matches = [];
       var match;
@@ -52,26 +52,26 @@ class Extractor {
       line_c++
     })
   }
-  
+
   generateSourceMapContent() {
     var content = ''
-    
+
     this.source_map.map((source) => {
       content = `${content}
       ${source.file}+${source.line}:${source.match}`
     })
-    
+
     return content
   }
-  
+
   promptCommands(messages) {
     var result = { values: {} };
     _.each(messages, (message) => {
       console.log(colors.yellow('Processing: '))
       console.log(message)
-      
+
       result['values'][message] = message;
-      
+
       var reg = new RegExp("(.*?%[snfd].*?)")
       var match = message.match(reg)
       if (match) {
@@ -89,9 +89,9 @@ class Extractor {
             } else {
               range1 = Number(range1)
             }
-            
+
             pluralization.push([Number(range[0]), range1, plural_message]);
-            
+
             console.log('message created.')
 
             new_plural = !readline.keyInYNStrict(colors.red(`finish ${message} pluralization?`))
