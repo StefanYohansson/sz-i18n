@@ -24,7 +24,7 @@ class Importer {
       this.importDest(data)
     })
   }
-  
+
   importDest(t_messages_content) {
     const langs = this.langs.split(',')
     fs.stat(this.source, (err, stat) => {
@@ -36,7 +36,7 @@ class Importer {
         fs.stat(lang_folder, (e, st) => {
           if(e)
             throw(e)
-        
+
           let file = lang_folder + path.sep + lang + '.json'
           fs.readFile(file, 'utf8', (e, data) => {
             if(e)
@@ -54,7 +54,8 @@ class Importer {
     messages.map((message) => {
       const value = data[message]
       if(value != '') {
-        content = content.replace(new RegExp("(.*[:] )?\""+message+"\"([,\\]])?","gi"), "$1\"" + value + "\"$2") 
+        content = content.replace(new RegExp("(.*[:,] )?\""+message+"\"([,\\]])?","g"), "$1\"" + value + "\"$2")
+        content = content.replace(new RegExp("\""+value+"\": \\[","g"), "\"" + message + "\": [")
       }
     })
     this.saveDest(lang, content)
@@ -63,11 +64,11 @@ class Importer {
   saveDest(lang, content) {
     let lang_file = this.dest + path.sep + lang + '.json'
     fs.writeFile(lang_file, content, 'utf8', (err) => {
-      if(err) 
+      if(err)
         throw(err)
       console.log('File Saved: ' + lang_file)
     })
   }
 }
 
-module.exports = Importer 
+module.exports = Importer

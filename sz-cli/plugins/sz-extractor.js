@@ -19,33 +19,62 @@ class Extractor {
     Object.keys(opts).map((key) => {
       this[key] = opts[key]
     })
+
+    this.matches = []
+    this.source_map = []
+  }
+
+  addSourceMapLine(file, line, match) {
+    this.source_map.push({
+      file,
+      line,
+      match
+    })
   }
 
   extractFromFile(file) {
     var content = fs.readFileSync(file, 'utf8')
-    // @TODO: this rule should comes from config file 
-    var reg = /i18n\.t\(['"`](.*?)['"`].*?\)/g
-    var matches = [];
-    var match;
-    while (match !== null) {
-      match = reg.exec(content)
-      if(match)
-        matches.push(match[1])
-    }
-    return matches
+    const strip = content.split(`\n`)
+    var line_c = 1
+    strip.map((line) => {
+      // @TODO: this rule should comes from config file
+      var reg = /i18n\.t\(['"`](.*?)['"`]\)/g
+      var matches = [];
+      var match;
+      while (match !== null) {
+        match = reg.exec(line)
+        if(match) {
+          this.matches.push(match[1])
+          this.addSourceMapLine(file, line_c, match[1])
+        }
+      }
+
+      line_c++
+    })
   }
-  
+
+  generateSourceMapContent() {
+    var content = ''
+
+    this.source_map.map((source) => {
+      content = `${content}
+${source.file}+${source.line}:${source.match}`
+    })
+
+    return content
+  }
+
   promptCommands(messages) {
     var result = { values: {} };
     _.each(messages, (message) => {
       console.log(colors.yellow('Processing: '))
       console.log(message)
-      
+
       result['values'][message] = message;
-      
+
       var reg = new RegExp("(.*?%[snfd].*?)")
       var match = message.match(reg)
-      if(match) {
+      if (match) {
         var has_plural = readline.keyInYNStrict('We detected your string has replaceable values. Do you want to add plural?')
         if (has_plural) {
           var pluralization = [];
@@ -60,9 +89,9 @@ class Extractor {
             } else {
               range1 = Number(range1)
             }
-            
+
             pluralization.push([Number(range[0]), range1, plural_message]);
-            
+
             console.log('message created.')
 
             new_plural = !readline.keyInYNStrict(colors.red(`finish ${message} pluralization?`))
@@ -80,9 +109,9 @@ class Extractor {
   extract() {
     const extract_rules = this.extract_rules || ['!*.js'];
     recursive(this.source_code, extract_rules, (err, files) => {
-      var messages = files.map(this.extractFromFile)
+      files.map(this.extractFromFile.bind(this))
       // remove no matches
-      messages = _.filter(messages, (f) => { return f.length })
+      var messages = _.filter(this.matches, (f) => { return f.length })
       // merge matches
       var all_messages = [].concat.apply([], messages)
       // remove duplicate
@@ -97,7 +126,7 @@ class Extractor {
       var user_happy = false
       while (!user_happy) {
         var generated_messages = this.promptCommands(messages)
-        console.log(colors.yellow('We\'ll generate this strings: '))
+        console.log(colors.yellow('We\'ll generate these strings: '))
         console.log(colors.green(JSON.stringify(generated_messages, null, 2)))
         var is_happy = readline.question(colors.red(`are you happy? [y/n/q] `))
         if (is_happy == 'q') {
@@ -110,6 +139,8 @@ class Extractor {
       all_messages = Object.assign(base_file, generated_messages)
       all_messages = JSON.stringify(all_messages, null, 2)
       fs.writeFileSync(this.base, all_messages, 'utf8')
+      var source_map = this.generateSourceMapContent()
+      fs.writeFileSync(this.base+'.map', source_map, 'utf8')
     })
   }
 }
