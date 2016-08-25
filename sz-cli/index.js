@@ -23,7 +23,7 @@ var config = {}
 var packageConfig = fs.readFileSync(__dirname + '/../package.json', 'utf8')
 packageConfig = JSON.parse(packageConfig)
 opts = docopt.docopt(doc, {argv: userArgs, version: packageConfig['version']})
-  
+
 try {
   config = JSON.parse(fs.readFileSync('i18n.json', 'utf8'))
 } catch(e) {
@@ -37,7 +37,7 @@ try {
 // entrypoint
 main(config)
 
-    
+
 function validateConfig(config) {
   _.map(config, (value, key) => {
     if (!value) {
@@ -49,7 +49,7 @@ function validateConfig(config) {
 
 function main(config) {
   validateConfig(config)
-  
+
   if (opts.init) {
     i = new plugins.szInit({})
     return i.init()
@@ -70,6 +70,7 @@ function main(config) {
       target: opts['-t'],
       source: opts['<base>'] || config['base'],
       dest: opts['<dest>'] || config['dest'],
+      base_lang: config['base_lang'],
       langs: opts['<langs>'] || config['langs'].join(',')
     })
     return ex.export()
@@ -96,4 +97,3 @@ function main(config) {
 
   return 0
 }
-

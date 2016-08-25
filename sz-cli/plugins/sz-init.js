@@ -1,6 +1,6 @@
 'use strict';
 
-var readline = require('readline-sync')
+var prompt = require('prompt-sync')()
 var fs = require('fs')
 
 class Init {
@@ -9,10 +9,10 @@ class Init {
       this[key] = opts[key]
     })
   }
-  
+
   init() {
     var fileExists = fs.existsSync('i18n.json')
-    
+
     if (fileExists)
       console.log(`[WARNING] File already exists.
 `)
@@ -22,7 +22,7 @@ base, source and destination must be the path relative to this folder.
 i.e: ./my/base/file.json
 
 `)
-    
+
     var config = {
       base: { message: 'Enter your base language file', required: true },
       source: { message: 'Enter your source (base files) folder', required: true },
@@ -30,7 +30,7 @@ i.e: ./my/base/file.json
       langs: { message: 'Enter your available languages (comma separated)', required: true },
       source_code: { message: 'Enter your source code (src) folder', required: true },
     }
-    
+
     var result = {}
     var properties = Object.keys(config)
     var index = 0
@@ -41,16 +41,16 @@ i.e: ./my/base/file.json
       var message = rules.message || ''
       var required = rules.required || null
 
-      var answer = readline.question(`${message}: `)
+      var answer = prompt(`${message}: `)
 
       if (required && !answer) {
-        console.log('Please provide correct information. This atrribute is required.') 
+        console.log('Please provide correct information. This atrribute is required.')
       } else {
         result[key] = answer
         index++
       }
     }
-    
+
     result.langs = result.langs.split(',')
     fs.writeFileSync('i18n.json', JSON.stringify(result, null, 2), 'utf8')
 

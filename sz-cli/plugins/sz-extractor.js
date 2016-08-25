@@ -3,13 +3,13 @@
 var fs = require('fs')
 var _ = require('lodash')
 var recursive = require('recursive-readdir')
-var readline = require('readline-sync')
-var colors = require('colors/safe');
+var prompt = require('prompt-sync')()
+var colors = require('colors/safe')
 
 function unique(list) {
   var result = [];
   _.each(list, function(v, k) {
-    if (result.indexOf(v) == -1) result.push(v);
+    if (result.indexOf(v) == -1) result.push(v)
   });
   return result;
 }
@@ -19,49 +19,29 @@ class Extractor {
     Object.keys(opts).map((key) => {
       this[key] = opts[key]
     })
-
-    this.matches = []
-    this.source_map = []
-  }
-
-  addSourceMapLine(file, line, match) {
-    this.source_map.push({
-      file,
-      line,
-      match
-    })
+    this.source_map = [];
   }
 
   extractFromFile(file) {
     var content = fs.readFileSync(file, 'utf8')
-    const strip = content.split(`\n`)
-    var line_c = 1
-    strip.map((line) => {
+    var lines = content.split('\n')
+
+    var _matches = lines.map((line, k) => {
       // @TODO: this rule should comes from config file
-      var reg = /i18n\.t\(['"`](.*?)['"`]\)/g
+      var reg = /i18n\.t\("([.\s\S]*?)".*?\)|i18n\.t\('([.\s\S]*?)'.*?\)|i18n\.t\(`([.\s\S]*?)`.*?\)/g
       var matches = [];
       var match;
       while (match !== null) {
         match = reg.exec(line)
         if(match) {
-          this.matches.push(match[1])
-          this.addSourceMapLine(file, line_c, match[1])
+          matches.push(match[1] || match[2] || match[3])
+          this.source_map.push(`${file}+${k}:${match[1] || match[2] || match[3]}`)
         }
       }
-
-      line_c++
-    })
-  }
-
-  generateSourceMapContent() {
-    var content = ''
-
-    this.source_map.map((source) => {
-      content = `${content}
-${source.file}+${source.line}:${source.match}`
+      return matches
     })
 
-    return content
+    return [].concat.apply([], _matches)
   }
 
   promptCommands(messages) {
@@ -74,14 +54,14 @@ ${source.file}+${source.line}:${source.match}`
 
       var reg = new RegExp("(.*?%[snfd].*?)")
       var match = message.match(reg)
-      if (match) {
-        var has_plural = readline.keyInYNStrict('We detected your string has replaceable values. Do you want to add plural?')
-        if (has_plural) {
+      if(match) {
+        var has_plural = prompt('We detected your string has replaceable values. Do you want to add plural? [y/n] ')
+        if (has_plural == 'y') {
           var pluralization = [];
           var new_plural = true
           while (new_plural) {
-            var range = readline.question('Enter plural range: ')
-            var plural_message = readline.question('Enter message for this range: ')
+            var range = prompt('Enter plural range: ')
+            var plural_message = prompt(`Enter message for this range: [${message}]: `, message)
             range = range.split('-')
             var range1 = range[1]
             if (range1 == 'null') {
@@ -90,11 +70,21 @@ ${source.file}+${source.line}:${source.match}`
               range1 = Number(range1)
             }
 
+            if (Number(range[0]) === null || Number(range[0]) === undefined || range1 === undefined) {
+              console.log(colors.yellow('Skipping, check your string and try again.'));
+              continue;
+            }
+
             pluralization.push([Number(range[0]), range1, plural_message]);
+            console.log(colors.green('Message created.'))
 
-            console.log('message created.')
+            var finish_plur = prompt(colors.red(`finish ${message} pluralization? [y/n/r]`), 'n')
 
-            new_plural = !readline.keyInYNStrict(colors.red(`finish ${message} pluralization?`))
+            if (finish_plur == 'y') {
+              new_plural = !(finish_plur == 'y');
+            } else if (finish_plur == 'r') {
+              pluralization.pop();
+            }
           }
 
           result['values'][message] = pluralization;
@@ -109,9 +99,9 @@ ${source.file}+${source.line}:${source.match}`
   extract() {
     const extract_rules = this.extract_rules || ['!*.js'];
     recursive(this.source_code, extract_rules, (err, files) => {
-      files.map(this.extractFromFile.bind(this))
+      var messages = files.map(this.extractFromFile.bind(this))
       // remove no matches
-      var messages = _.filter(this.matches, (f) => { return f.length })
+      messages = _.filter(messages, (f) => { return f.length })
       // merge matches
       var all_messages = [].concat.apply([], messages)
       // remove duplicate
@@ -126,9 +116,9 @@ ${source.file}+${source.line}:${source.match}`
       var user_happy = false
       while (!user_happy) {
         var generated_messages = this.promptCommands(messages)
-        console.log(colors.yellow('We\'ll generate these strings: '))
+        console.log(colors.yellow('We\'ll generate this strings: '))
         console.log(colors.green(JSON.stringify(generated_messages, null, 2)))
-        var is_happy = readline.question(colors.red(`are you happy? [y/n/q] `))
+        var is_happy = prompt(colors.red(`are you happy? [y/n/q] `))
         if (is_happy == 'q') {
           process.exit(0)
         }
@@ -139,8 +129,7 @@ ${source.file}+${source.line}:${source.match}`
       all_messages = Object.assign(base_file, generated_messages)
       all_messages = JSON.stringify(all_messages, null, 2)
       fs.writeFileSync(this.base, all_messages, 'utf8')
-      var source_map = this.generateSourceMapContent()
-      fs.writeFileSync(this.base+'.map', source_map, 'utf8')
+      fs.writeFileSync(this.base+'.map', this.source_map.join('\n'), 'utf8')
     })
   }
 }
