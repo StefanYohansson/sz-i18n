@@ -49,11 +49,31 @@ class Importer {
     })
   }
 
+  findNumberInterpolation(content) {
+    var reg = /\"(.*?%n.*?)\"/g
+    var i = 0;
+    var result;
+    var matches = [];
+    while ((result = reg.exec(content)) !== null) {
+      matches.push(result[1]);
+    }
+    return matches;
+  }
+
   replaceLang(lang, content, data) {
+    var matches = this.findNumberInterpolation(content)
+
     const messages = Object.keys(data)
     messages.map((message) => {
-      const value = data[message]
+      var value = data[message]
       if(value != '') {
+
+        var replaced_message = message.replace(/([0-9]+\.)?\.?[0-9]+/, "%d")
+        if (matches.includes(replaced_message)) {
+          value = value.replace(/([0-9]+\.)?\.?[0-9]+/, "%d");
+          message = replaced_message;
+        }
+
         content = content.replace(new RegExp("(.*[:,] )?\""+message+"\"([,\\]])?","g"), "$1\"" + value + "\"$2")
         content = content.replace(new RegExp("\""+value+"\": \\[","g"), "\"" + message + "\": [")
       }

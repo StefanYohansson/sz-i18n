@@ -77,8 +77,12 @@ class Exporter {
       if(typeof value == 'object') {
         nested_messages.push(value)
       }
-      return key
+      var reg = /(.*?%n.*?)/g
+      if (reg.exec(key) === null)
+        return key
     })
+
+    messages = _.filter(messages);
 
     let result = nested_messages.map((value, key) => {
       return this.extractNested(value)
@@ -103,7 +107,7 @@ class Exporter {
       const last_value = value[value.length-1]
 
       if(typeof last_value === 'string')
-        return last_value
+        return last_value.replace("\%n", String(value[0]) || String(value[1]))
 
       if(typeof value == 'object')
         return this.extractNested(nested)
