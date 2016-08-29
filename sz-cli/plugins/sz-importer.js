@@ -65,17 +65,21 @@ class Importer {
 
     const messages = Object.keys(data)
     messages.map((message) => {
-      var value = data[message]
+      var value = data[message].toString()
+      message = message.replace(/\\n/g, '\\\\n').replace(/"/g, '\\"');
+      value = value.replace(/\\n/g, '\\\\n').replace(/"/g, '\\"');
       if(value != '') {
 
-        var replaced_message = message.replace(/([0-9]+\.)?\.?[0-9]+/, "%d")
+        var replaced_message = message.replace(/([0-9]+\.)?\.?[0-9]+/, "%n")
         if (matches.includes(replaced_message)) {
-          value = value.replace(/([0-9]+\.)?\.?[0-9]+/, "%d");
+          value = value.replace(/([0-9]+\.)?\.?[0-9]+/, "%n");
           message = replaced_message;
         }
 
-        content = content.replace(new RegExp("(.*[:,] )?\""+message+"\"([,\\]])?","g"), "$1\"" + value + "\"$2")
-        content = content.replace(new RegExp("\""+value+"\": \\[","g"), "\"" + message + "\": [")
+        value = value.replace(/\n/g, '\\n');
+        content = content.split("\""+ message +"\"").join("\""+ value +"\"");
+        content = content.split("\""+ value +"\": [").join("\""+ message +"\": [");
+        content = content.split("\""+ value +"\": \"").join("\""+ message +"\": \"");
       }
     })
     this.saveDest(lang, content)
