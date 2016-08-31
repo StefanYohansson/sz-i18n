@@ -111,7 +111,7 @@ class Extractor {
       if(!base_file)
         console.log(colors.red("You need to generate a base file and reference in config or provide by argument. Please read the docs."));
       // filter existing messages
-      messages = _.filter(all_messages, (f) => { return base_file.indexOf(f) == -1 })
+      messages = _.filter(all_messages, (f) => { return base_file.indexOf(f.replace(/\\n/g, '\\\\n').replace(/"/g, '\\"')) == -1 })
       // ask what user want to do
       var user_happy = false
       while (!user_happy) {
@@ -126,10 +126,17 @@ class Extractor {
         user_happy = is_happy == 'y'
       }
       base_file = JSON.parse(base_file || '{}')
-      all_messages = Object.assign(base_file, generated_messages)
+      const values = Object.assign(base_file.values || {}, generated_messages.values || {}, {});
+      const contexts = Object.assign(base_file.contexts || [], generated_messages.contexts || [], []);
+      var all_messages = { values, contexts };
       all_messages = JSON.stringify(all_messages, null, 2)
       fs.writeFileSync(this.base, all_messages, 'utf8')
-      fs.writeFileSync(this.base+'.map', this.source_map.join('\n'), 'utf8')
+      fs.writeFileSync(this.base+'.map', this.source_map.join('\n'),
+        {
+          encoding: 'utf8',
+          flag: 'w+'
+        }
+      )
     })
   }
 }
