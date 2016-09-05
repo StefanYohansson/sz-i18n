@@ -20,7 +20,7 @@ export default class i18n {
   }
 
   translate(text, defaultReplacers, optionalReplacers, formattingOrContext, context) {
-    if(this.activeDictionary) {
+    if(this.activeDictionary && this.activeDictionary in this.dictionaries) {
       const result = this.dictionaries[this.activeDictionary].translate(text, defaultReplacers, optionalReplacers, formattingOrContext, context)
       if(this.once) {
         this.activeDictionary = this.onceOldDict
