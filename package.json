@@ -1,6 +1,6 @@
 {
   "name": "sz-i18n",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "Internationalization library. Easy and Fast.",
   "main": "index",
   "bin": {
