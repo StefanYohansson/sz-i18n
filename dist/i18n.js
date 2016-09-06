@@ -78,6 +78,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.onceOldDict = null;
 	    this.activeDictionary = null;
 	    this.once = null;
+	    this.defaultLang = null;
 	  }
 
 	  _createClass(i18n, [{
@@ -91,6 +92,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this;
 	    }
 	  }, {
+	    key: 'defaultLanguage',
+	    value: function defaultLanguage(lang) {
+	      this.defaultLang = lang;
+	      return this;
+	    }
+	  }, {
 	    key: 'translator',
 	    value: function translator() {
 	      var dictionary = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
@@ -100,7 +107,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'translate',
 	    value: function translate(text, defaultReplacers, optionalReplacers, formattingOrContext, context) {
-	      if (this.activeDictionary) {
+	      if (this.activeDictionary && this.activeDictionary in this.dictionaries) {
 	        var result = this.dictionaries[this.activeDictionary].translate(text, defaultReplacers, optionalReplacers, formattingOrContext, context);
 	        if (this.once) {
 	          this.activeDictionary = this.onceOldDict;
@@ -108,6 +115,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        return result;
 	      }
+	      if (this.defaultLang) return this.dictionaries[this.defaultLang].translate(text, defaultReplacers, optionalReplacers, formattingOrContext, context);
 	      if (Object.keys(this.dictionaries).length == 1) return this.dictionaries[Object.keys(this.dictionaries)[0]].translate(text, defaultReplacers, optionalReplacers, formattingOrContext, context);
 	    }
 	  }, {
