@@ -6,12 +6,18 @@ export default class i18n {
     this.onceOldDict = null
     this.activeDictionary = null
     this.once = null
+    this.defaultLang = null
   }
 
   using(dictionary, once = true) {
     this.onceOldDict = this.activeDictionary
     this.activeDictionary = dictionary
     this.once = once
+    return this
+  }
+
+  defaultLanguage(lang) {
+    this.defaultLang = lang
     return this
   }
 
@@ -28,6 +34,8 @@ export default class i18n {
       }
       return result
     }
+    if(this.defaultLang)
+      return this.dictionaries[this.defaultLang].translate(text, defaultReplacers, optionalReplacers, formattingOrContext, context)
     if(Object.keys(this.dictionaries).length == 1)
       return this.dictionaries[Object.keys(this.dictionaries)[0]].translate(text, defaultReplacers, optionalReplacers, formattingOrContext, context)
   }
