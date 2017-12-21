@@ -1,0 +1,58 @@
+const I18n = require('sz-i18n').I18n;
+const Dict = require('sz-i18n').Dictionary;
+
+const dicts = {
+  'pt-BR': {
+    values: {'cancel': 'cancelar',
+    '%n users': [
+      [0,0,'%n usuarios'],
+      [1,1,'%n usuario'],
+      [2,null,'%n usuarios'],
+    ]},
+    contexts: {
+      'month': {
+        'May': Maio
+      }
+    }
+  },
+  'en-US': {
+    'cancel': 'cancel',
+    '%n users': [
+      [0,0,'%n users'],
+      [1,1,'%n user'],
+      [2,null,'%n users'],
+    ]
+  },
+};
+
+const dictionaries = Dict.reduce(dicts);
+
+//const dictBR = Dictionary.of('pt-BR');
+//const dictUS = Dictionary.of('en-US');
+
+const i18n = I18n.of(dictionaries);
+
+// #- Translator: Month in the calendar -#
+i18n.ct('Month', 'May').resolve();
+
+// #- Translator: user count in users page -#
+i18n.l('%n users', [1]).resolve()
+
+// #- Translator: month in calendar -#
+i18n.l('May').resolve()
+
+
+
+
+
+// ---------------------------------
+source - en-us.json
+build - en-us.json
+
+metadata - en-us.json
+
+"Cancel": {
+  file: "",
+  line: "",
+  
+}
