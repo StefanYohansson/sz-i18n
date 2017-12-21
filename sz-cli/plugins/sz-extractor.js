@@ -28,7 +28,7 @@ class Extractor {
 
     var _matches = lines.map((line, k) => {
       // @TODO: this rule should comes from config file
-      var reg = /i18n\.t\("([.\s\S]*?)".*?\)|i18n\.t\('([.\s\S]*?)'.*?\)|i18n\.t\(`([.\s\S]*?)`.*?\)/g
+      var reg = /i18n\.[t,l]\("([.\s\S]*?)".*?\)|i18n\.[t,l]\('([.\s\S]*?)'.*?\)|i18n\.[t,l]\(`([.\s\S]*?)`.*?\)/g
       var matches = [];
       var match;
       while (match !== null) {
