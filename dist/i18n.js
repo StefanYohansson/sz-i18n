@@ -52,7 +52,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -84,7 +84,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _createClass(i18n, [{
 	    key: 'using',
 	    value: function using(dictionary) {
-	      var once = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+	      var once = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
 	      this.onceOldDict = this.activeDictionary;
 	      this.activeDictionary = dictionary;
@@ -100,7 +100,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'translator',
 	    value: function translator() {
-	      var dictionary = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+	      var dictionary = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
 	      return this.dictionaries[dictionary || this.activeDictionary];
 	    }
@@ -153,9 +153,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = i18n;
 	module.exports = exports['default'];
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	"use strict";
 
@@ -167,7 +167,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -237,7 +237,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: "translate",
 	    value: function translate(text, defaultReplacers, optionalReplacers, formattingOrContext) {
-	      var context = arguments.length <= 4 || arguments[4] === undefined ? this.globalContext : arguments[4];
+	      var context = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : this.globalContext;
 
 	      var defaultText = null;
 	      var num = null;
@@ -261,13 +261,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var _this = this;
 
 	      if (data.values) {
-	        (function () {
-	          var that = _this;
-	          Object.keys(data.values).forEach(function (key) {
-	            var value = data.values[key];
-	            that.data.values[key] = value;
-	          });
-	        })();
+	        var that = this;
+	        Object.keys(data.values).forEach(function (key) {
+	          var value = data.values[key];
+	          that.data.values[key] = value;
+	        });
 	      }
 
 	      if (data.contexts) {
@@ -305,7 +303,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: "translateText",
 	    value: function translateText(text, num, formatting) {
-	      var context = arguments.length <= 3 || arguments[3] === undefined ? this.globalContext : arguments[3];
+	      var context = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : this.globalContext;
 	      var defaultText = arguments[4];
 
 	      if (this.data == null) {
@@ -345,20 +343,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      } else {
 	        if (value instanceof Array && value.length) {
-	          var _ret2 = function () {
-	            var result = null;
-	            value.map(function (triple) {
-	              if ((num >= triple[0] || triple[0] == null) && (num <= triple[1] || triple[1] == null)) {
-	                result = _this2.applyFormatting(triple[2].replace("-%n", String(-num)), num, formatting);
-	                result = _this2.applyFormatting(result.replace("%n", String(num)), num, formatting);
-	              }
-	            });
-	            return {
-	              v: result
-	            };
-	          }();
-
-	          if ((typeof _ret2 === "undefined" ? "undefined" : _typeof(_ret2)) === "object") return _ret2.v;
+	          var result = null;
+	          value.map(function (triple) {
+	            if ((num >= triple[0] || triple[0] == null) && (num <= triple[1] || triple[1] == null)) {
+	              result = _this2.applyFormatting(triple[2].replace("-%n", String(-num)), num, formatting);
+	              result = _this2.applyFormatting(result.replace("%n", String(num)), num, formatting);
+	            }
+	          });
+	          return result;
 	        }
 	      }
 	      return null;
@@ -417,7 +409,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Translator;
 	module.exports = exports['default'];
 
-/***/ }
+/***/ })
 /******/ ])
 });
 ;
