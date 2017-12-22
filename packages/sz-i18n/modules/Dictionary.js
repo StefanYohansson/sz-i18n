@@ -1,37 +1,66 @@
-import {
-  DEFAULT_DRIVER,
-  driversMap,
-} from './drivers';
+/* eslint no-param-reassign: 0 */
+import { vsprintf } from 'sprintf-js';
+import DriverConfig from './drivers';
 import InvalidDriverException from './drivers/InvalidDriverException';
 
-function replace(haystack, needle) {
-  // @TODO: use sprintf library for this
-  return haystack.replace(needle);
-}
+const { DEFAULT_DRIVER, driversMap } = DriverConfig;
 
 class T {
   constructor(translatorFn) {
     this.translatorFn = translatorFn;
   }
 
-  resolve() {
-    return this.translatorFn();
+  resolve(context) {
+    return this.translatorFn(context);
   }
 }
 
 class Dictionary {
-  constructor(dict = {}, options) {
+  constructor(dict, options = {}) {
     this.dict = dict;
 
     const driver = options.driver || DEFAULT_DRIVER;
     if (!Object.keys(driversMap).includes(driver)) {
-      throw InvalidDriverException;
+      throw (new InvalidDriverException(`Invalid driver: ${driver}`));
     }
     this.driver = new driversMap[driver](this.dict);
   }
 
+  static replace(haystack, needle = []) {
+    return vsprintf(haystack, needle);
+  }
+
+  static findByQuantifier(haystack, needle, text) {
+    if (!(haystack instanceof Array && haystack.length)) {
+      return haystack;
+    }
+
+    const pluralizedText = haystack.reduce((acc, triple) => {
+      if ((needle >= triple[0] || triple[0] == null)
+         && (needle <= triple[1] || triple[1] == null)) {
+        acc = triple[2].replace('-%n', String(-needle));
+        acc = acc.replace('%n', String(needle));
+      }
+      return acc;
+    }, text);
+
+    return pluralizedText;
+  }
+
   translate(text, replaceArguments) {
-    return new T(() => replace(this.driver.getText(text), replaceArguments));
+    return new T((context = null) =>
+      Dictionary.replace(
+        this.driver.getText(text, context),
+        replaceArguments,
+      ));
+  }
+
+  translatePluralization(text, quantifier, replaceArguments) {
+    return new T((context = null) =>
+      Dictionary.replace(Dictionary.findByQuantifier(
+        this.driver.getText(text, context),
+        quantifier, text,
+      ), replaceArguments));
   }
 }
 
