@@ -29,7 +29,7 @@ import getDictionaryByLanguage from './helpers/i18n';
 const dictionary = getDictionaryByLanguage(navigator.language);
 
 // driver can be omitted, json is the default option
-window.__ = new i18n(dictionary, { driver: i18n.DRIVER_JSON });
+window.__ = new i18n(dictionary, { driver: 'json' });
 
 // feel free to create shortcuts
 __.t = __.translate;
