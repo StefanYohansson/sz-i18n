@@ -332,6 +332,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function findTranslation(text, num, formatting, data) {
 	      var _this2 = this;
 
+	      var result = null;
 	      var value = data[text];
 
 	      if (value == null) {
@@ -343,13 +344,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      } else {
 	        if (value instanceof Array && value.length) {
-	          var result = null;
 	          value.map(function (triple) {
 	            if ((num >= triple[0] || triple[0] == null) && (num <= triple[1] || triple[1] == null)) {
 	              result = _this2.applyFormatting(triple[2].replace("-%n", String(-num)), num, formatting);
 	              result = _this2.applyFormatting(result.replace("%n", String(num)), num, formatting);
 	            }
 	          });
+	          return result;
+	        } else {
+	          result = this.applyFormatting(value.replace("-%n", String(-num)), num, formatting);
+	          result = this.applyFormatting(value.replace("%n", String(num)), num, formatting);
 	          return result;
 	        }
 	      }
