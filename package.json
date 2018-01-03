@@ -1,5 +1,13 @@
 {
-	"devDependencies": {
-		"lerna": "^2.5.1"
-	}
+    "private": true,
+    "name": "sz-i18n-packages",
+    "scripts": {
+      "postinstall": "node ./scripts/postinstall.js",
+      "build": "node ./scripts/build.js",
+      "clean": "lerna run clean",
+      "test": "lerna run test --stream"
+    },
+    "devDependencies": {
+        "lerna": "^2.5.1"
+    }
 }

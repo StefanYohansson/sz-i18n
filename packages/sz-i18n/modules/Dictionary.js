@@ -1,5 +1,5 @@
 /* eslint no-param-reassign: 0 */
-import { vsprintf } from 'sprintf-js';
+import sprintf from 'sprintf-js';
 import DriverConfig from './drivers';
 import InvalidDriverException from './drivers/InvalidDriverException';
 
@@ -27,7 +27,7 @@ class Dictionary {
   }
 
   static replace(haystack, needle = []) {
-    return vsprintf(haystack, needle);
+    return sprintf.vsprintf(haystack, needle);
   }
 
   static findByQuantifier(haystack, needle, text) {
