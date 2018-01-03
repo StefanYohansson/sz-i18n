@@ -97,6 +97,7 @@ describe("API", () => {
   it('should create an english dictionary', () => {
     _i.create('en', {
       values: {
+        "Limit: %n": "Limit: %n",
         "Cancel": "Cancel",
         "%n selected": "%n selected",
         "%n comments":[
@@ -144,6 +145,8 @@ describe("API", () => {
   })
 
   it('should pluralize english', () => {
+    assert(_i.using('en').translate("Limit: %n", 1), "Limit: 1")
+
     assert(_i.using('en').translate("%n comments", 0), "0 comments")
     assert(_i.using('en').translate("%n comments", 1), "1 comment")
     assert(_i.using('en').translate("%n comments", 2), "2 comments")
