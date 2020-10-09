@@ -28,6 +28,6 @@ describe('A <Json> Driver', () => {
 describe('A <Po> Driver', () => {
   it('can receive a valid dictionary', () => {
     const jsonDriver = new Po('');
-    expect(jsonDriver.dictionary).to.be.a('string');
+    expect(jsonDriver.dictionary).to.be.a('object');
   });
 });

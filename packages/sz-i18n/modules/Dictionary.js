@@ -30,21 +30,8 @@ class Dictionary {
     return sprintf.vsprintf(haystack, needle);
   }
 
-  static findByQuantifier(haystack, needle, text) {
-    if (!(haystack instanceof Array && haystack.length)) {
-      return haystack;
-    }
-
-    const pluralizedText = haystack.reduce((acc, triple) => {
-      if ((needle >= triple[0] || triple[0] == null)
-         && (needle <= triple[1] || triple[1] == null)) {
-        acc = triple[2].replace('-%n', String(-needle));
-        acc = acc.replace('%n', String(needle));
-      }
-      return acc;
-    }, text);
-
-    return pluralizedText;
+  findByQuantifier(haystack, needle, text) {
+    return this.driver.getQuantifier(haystack, needle, text);
   }
 
   translate(text, replaceArguments) {
@@ -57,7 +44,7 @@ class Dictionary {
 
   translatePluralization(text, quantifier, replaceArguments) {
     return new T((context = null) =>
-      Dictionary.replace(Dictionary.findByQuantifier(
+      Dictionary.replace(this.findByQuantifier(
         this.driver.getText(text, context),
         quantifier, text,
       ), replaceArguments));

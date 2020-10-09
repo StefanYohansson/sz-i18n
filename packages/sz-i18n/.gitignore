@@ -3,4 +3,5 @@ node_modules
 umd
 /*.js
 drivers/
+!modules/
 !rollup.config.js
