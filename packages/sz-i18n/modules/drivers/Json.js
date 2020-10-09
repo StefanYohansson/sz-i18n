@@ -10,6 +10,23 @@ class Json extends Driver {
     super(dict);
   }
 
+  getQuantifier(haystack, needle, text) {
+    if (!(haystack instanceof Array && haystack.length)) {
+      return haystack;
+    }
+
+    const pluralizedText = haystack.reduce((acc, triple) => {
+      if ((needle >= triple[0] || triple[0] == null)
+         && (needle <= triple[1] || triple[1] == null)) {
+        acc = triple[2].replace('-%n', String(-needle));
+        acc = acc.replace('%n', String(needle));
+      }
+      return acc;
+    }, text);
+
+    return pluralizedText;
+  }
+
   getText(text, context = null) {
     let values = this.dictionary.values || this.dictionary;
 
